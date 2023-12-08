@@ -1,0 +1,130 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+
+namespace checkingGame
+{
+    public partial class Form1 : Form
+    {
+        /// c#은 int[] a = {}
+        /// index[0]은 0이고, 이 값은 cards[0]을 가리키게 됩니다. 즉, cards[index[0]]과 같은 표현은 cards[0]과 동일한 이미지를 가리킵니다.
+        Image[] card  = { 
+            Properties.Resources.apple, 
+            Properties.Resources.avocado,
+            Properties.Resources.banana,
+            Properties.Resources.blueberry,
+            Properties.Resources.cherry,
+            Properties.Resources.gold_kiwi,
+            Properties.Resources.grape_fruit,
+            Properties.Resources.grape,
+            Properties.Resources.lemon,
+            Properties.Resources.mandarin,
+            Properties.Resources.mango,
+            Properties.Resources.orange,
+            Properties.Resources.oriental_melon,
+            Properties.Resources.peach,
+            Properties.Resources.pear,
+            Properties.Resources.pineapple,
+            Properties.Resources.plum,
+            Properties.Resources.pomegranate,
+            Properties.Resources.strawberry,
+            Properties.Resources.tomato,
+            Properties.Resources.watermelon,
+           };
+
+        int[] index = { 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10,
+        11, 11, 12, 12, 13, 13, 14, 14 ,15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20, 20};/// 그림이 쌍으로 저장할 수 있게 배열을 만듬
+        int found;  
+        int movement; /* 애는 브랜치로 빼자poo-1 */
+        Button firstCard;
+        int firstIndex; /*  4  */
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            updatedCards(); /* 5 */
+        }
+        private void updatedCards() 
+        {
+            Random random = new Random(); /* 6 */
+
+            for (int i = 0; i < 42; i++) 
+            {
+                int random_number = random.Next(0, 21);
+                int temp = index[i];
+                    index[i] = index[random_number];
+                    index[random_number] = temp;
+                }
+        } /* 7 */
+
+        private void newGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            found = 0;
+            movement = 0; /* 8 */
+
+            foreach (Control control in tableLayoutPanel1.Controls)
+            {
+                if (control is Button button) 
+                {
+                    button.Visible = true;
+
+                }
+            }
+            updatedCards();
+
+        }/* 9 */
+        public Form1()
+        {
+            InitializeComponent();
+            updatedCards();
+        } /* 10 */
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Button card_button = (Button)sender;  /* 11 */
+
+            card_button.Enabled = false; 
+            int ButtonNumber = int.Parse(card_button.Name.Substring(6));
+            int indexNumber = index[ButtonNumber - 1];
+            card_button.BackgroundImage = card [indexNumber]; 
+            card_button.Refresh(); /* 12 */
+
+            if (firstCard == null)
+            {
+                firstCard = card_button;
+                firstIndex = indexNumber;
+                movement++;/* poo-2 */
+            } /* 13 */
+
+            else 
+            {
+                firstCard.BackgroundImage = null;
+                card_button.BackgroundImage = null;  /* 14 */
+                if (firstIndex == indexNumber)
+                {
+                    found++;
+                    firstCard.Visible = false;
+                    card_button.Visible = false; /* 15 */
+                    if (found == 2) 
+                    {
+                        MessageBox.Show("축하합니다!", "시행횟수 : "+ movement);
+                        tableLayoutPanel1.Enabled = false;
+                    }
+
+                }/* 16 */
+                card_button.Enabled = true; ///두번 째 카드 클릭 가능
+                firstCard.Enabled = true; ///첫 번째 카드클릭가능
+                firstCard = null;///첫번 째 카드가 없는 상태로 초기화
+            }/* 17 */
+
+        }
+    }
+
+}
